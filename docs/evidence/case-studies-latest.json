@@ -1,0 +1,193 @@
+{
+  "schema_version": 1,
+  "created_utc": "2026-10-11T12:47:03.946255+00:00",
+  "scope": "Synthetic loopback API; no real attacker, malware or production target",
+  "python": "3.12.14",
+  "canonical_python": "3.13 (not validated by this compatibility run)",
+  "baseline_note": "Retained earlier audit; vulnerable dependency versions were not rerun",
+  "audit": {
+    "retained_baseline": {
+      "info": 0,
+      "low": 0,
+      "moderate": 3,
+      "high": 5,
+      "critical": 2,
+      "total": 10
+    },
+    "current_full": {
+      "info": 0,
+      "low": 0,
+      "moderate": 20,
+      "high": 0,
+      "critical": 0,
+      "total": 20
+    },
+    "current_production": {
+      "info": 0,
+      "low": 0,
+      "moderate": 0,
+      "high": 0,
+      "critical": 0,
+      "total": 0
+    }
+  },
+  "versions": {
+    "@nestjs/platform-express": "11.2.7",
+    "multer": "2.4.0"
+  },
+  "api": {
+    "totals": {
+      "collected": 72,
+      "passed": 72,
+      "failed": 0,
+      "skipped": 0
+    },
+    "modules": {
+      "tests.security.test_ai_boundary": {
+        "collected": 8,
+        "passed": 8,
+        "failed": 0,
+        "skipped": 0
+      },
+      "tests.security.test_authentication": {
+        "collected": 12,
+        "passed": 12,
+        "failed": 0,
+        "skipped": 0
+      },
+      "tests.security.test_authorization_matrix": {
+        "collected": 20,
+        "passed": 20,
+        "failed": 0,
+        "skipped": 0
+      },
+      "tests.security.test_log_redaction": {
+        "collected": 1,
+        "passed": 1,
+        "failed": 0,
+        "skipped": 0
+      },
+      "tests.security.test_mass_assignment": {
+        "collected": 5,
+        "passed": 5,
+        "failed": 0,
+        "skipped": 0
+      },
+      "tests.security.test_rate_limiting": {
+        "collected": 4,
+        "passed": 4,
+        "failed": 0,
+        "skipped": 0
+      },
+      "tests.security.test_stripe_webhook": {
+        "collected": 8,
+        "passed": 8,
+        "failed": 0,
+        "skipped": 0
+      },
+      "tests.security.test_upload_security": {
+        "collected": 7,
+        "passed": 7,
+        "failed": 0,
+        "skipped": 0
+      },
+      "tests.security.test_xml_security": {
+        "collected": 7,
+        "passed": 7,
+        "failed": 0,
+        "skipped": 0
+      }
+    }
+  },
+  "gate": {
+    "totals": {
+      "collected": 21,
+      "passed": 21,
+      "failed": 0,
+      "skipped": 0
+    },
+    "modules": {
+      "tests.gate.test_normalization": {
+        "collected": 9,
+        "passed": 9,
+        "failed": 0,
+        "skipped": 0
+      },
+      "tests.gate.test_security_gate": {
+        "collected": 2,
+        "passed": 2,
+        "failed": 0,
+        "skipped": 0
+      },
+      "tests.portfolio.test_case_study_evidence": {
+        "collected": 5,
+        "passed": 5,
+        "failed": 0,
+        "skipped": 0
+      },
+      "tests.portfolio.test_evidence": {
+        "collected": 5,
+        "passed": 5,
+        "failed": 0,
+        "skipped": 0
+      }
+    }
+  },
+  "ownership_demo": {
+    "status": "PASS",
+    "checks": [
+      {
+        "action": "Owner reads own resource",
+        "actual": 200,
+        "expected": 200
+      },
+      {
+        "action": "Other user reads resource",
+        "actual": 404,
+        "expected": 404
+      },
+      {
+        "action": "Other user changes resource",
+        "actual": 404,
+        "expected": 404
+      },
+      {
+        "action": "Original state unchanged",
+        "actual": true,
+        "expected": true
+      },
+      {
+        "action": "Correlated denial event retained",
+        "actual": true,
+        "expected": true
+      }
+    ]
+  },
+  "evidence_integrity_checks": {
+    "missing_semgrep_collection_rejected": true,
+    "trivy_secret_detection_retained": true,
+    "note": "Synthetic parser inputs, not executed Semgrep/Trivy scans"
+  },
+  "artifacts": {
+    "current_full_audit": {
+      "path": "reports/case-studies/npm-audit.json",
+      "sha256": "ad174ae0197eecc956f0d7970a5b2df00e9011d81a2540437e8d1faecb942016"
+    },
+    "current_production_audit": {
+      "path": "reports/case-studies/npm-audit-production.json",
+      "sha256": "b58c4d11273dc052b58eb998c4a4a2b3c91f55d4f934148838fa5ecb43b73c49"
+    },
+    "api_junit": {
+      "path": "reports/case-studies/api-security.xml",
+      "sha256": "6d95ea5fb0654c0e2e26a1dffb9447b23162c81391d3cb495d10befbd446d3b6"
+    },
+    "gate_junit": {
+      "path": "reports/case-studies/gate-tests.xml",
+      "sha256": "4d561246ff80ea3fbbb29327b879594329fa9932f0c1756040db4b0a8403eef2"
+    },
+    "retained_baseline_audit": {
+      "path": "reports/portfolio/npm-audit.json",
+      "sha256": "356a5d67c93b65787e3ab1ed7ba6b0b42d01e3c405e603af9dd49523302f99a1"
+    }
+  }
+}

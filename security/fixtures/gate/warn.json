@@ -1,0 +1,1 @@
+{"scanner":{"name":"zap","status":"success"},"findings":[{"id":"SYNTH-DAST-001","severity":"MEDIUM","confidence":"medium","validated":false,"new":true}]}

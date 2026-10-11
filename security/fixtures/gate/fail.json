@@ -1,0 +1,1 @@
+{"scanner":{"name":"gitleaks","status":"success"},"findings":[{"id":"SYNTH-SECRET-001","severity":"CRITICAL","confidence":"high","validated":true,"verified_credential":true,"new":true}]}

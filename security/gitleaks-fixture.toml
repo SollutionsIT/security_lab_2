@@ -1,0 +1,7 @@
+title = "Gitleaks isolated self-test policy"
+
+[[rules]]
+id = "synthetic-lab-api-key"
+description = "Detect the synthetic scanner canary"
+regex = '''(?i)synthetic_api_key\s*[:=]\s*["']?synth_[a-z0-9]{24,}["']?'''
+keywords = ["synthetic_api_key"]

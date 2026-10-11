@@ -1,0 +1,7 @@
+title: Repeated object or function authorization denials
+status: experimental
+logsource: {category: application, product: company-security-lab}
+detection:
+  selection: {event: authorization_denied, result: denied}
+  condition: count(selection by actor_id) >= 5 within 10m
+response: Triage BOLA/BFLA probing versus stale clients; correlate resource_type and action.

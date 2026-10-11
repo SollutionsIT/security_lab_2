@@ -1,0 +1,9 @@
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: lab-api
+  namespace: company-security-lab
+spec:
+  minAvailable: 1
+  selector:
+    matchLabels: {app.kubernetes.io/name: lab-api}

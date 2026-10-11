@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE properties [
+  <!ENTITY synthetic SYSTEM "urn:synthetic:must-not-resolve">
+]>
+<properties>
+  <property>&synthetic;</property>
+</properties>

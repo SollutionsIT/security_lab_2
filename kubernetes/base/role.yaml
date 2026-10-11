@@ -1,0 +1,6 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: lab-api-no-api-access
+  namespace: company-security-lab
+rules: []

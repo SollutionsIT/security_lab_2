@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: lab-api
+  namespace: company-security-lab
+spec:
+  type: ClusterIP
+  selector: {app.kubernetes.io/name: lab-api}
+  ports:
+    - {name: http, port: 3001, targetPort: http, protocol: TCP}

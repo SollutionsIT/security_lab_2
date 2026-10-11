@@ -1,0 +1,7 @@
+title: Sensitive admin operation outside expected context
+status: experimental
+logsource: {category: application, product: company-security-lab}
+detection:
+  selection: {resource_type: admin_function, result: allowed}
+  condition: selection and actor_id not in approved_admin_subjects
+response: Validate identity, change context and adjacent authorization failures.

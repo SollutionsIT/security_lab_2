@@ -1,0 +1,52 @@
+rules:
+  - id: company.no-authorization-header-logging
+    message: Do not log Authorization headers; log a redacted security event instead.
+    severity: ERROR
+    languages: [typescript, javascript]
+    metadata:
+      category: security
+      cwe: CWE-532
+      owasp: A09:2021
+    patterns:
+      - pattern-either:
+          - pattern: console.$METHOD($REQ.headers.authorization)
+          - pattern: $LOGGER.$METHOD($REQ.headers.authorization)
+
+  - id: company.no-dynamic-shell-exec
+    message: Dynamic shell execution can turn untrusted input into command injection.
+    severity: ERROR
+    languages: [typescript, javascript]
+    metadata:
+      category: security
+      cwe: CWE-78
+      owasp: A03:2021
+    patterns:
+      - pattern-either:
+          - pattern: exec($INPUT, ...)
+          - pattern: execSync($INPUT, ...)
+      - pattern-not: exec("...", ...)
+      - pattern-not: execSync("...", ...)
+
+  - id: company.jwt-verify-must-constrain-algorithm
+    message: JWT verification must set an explicit algorithms allowlist.
+    severity: ERROR
+    languages: [typescript, javascript]
+    metadata:
+      category: security
+      cwe: CWE-347
+      owasp: API2:2023
+    patterns:
+      - pattern: jwtVerify($TOKEN, $KEY, $OPTIONS)
+      - pattern-not: 'jwtVerify($TOKEN, $KEY, { ..., algorithms: $ALGORITHMS, ... })'
+
+  - id: company.validation-pipe-must-forbid-extra-fields
+    message: NestJS ValidationPipe must reject non-whitelisted fields to prevent mass assignment.
+    severity: WARNING
+    languages: [typescript]
+    metadata:
+      category: security
+      cwe: CWE-915
+      owasp: API3:2023
+    patterns:
+      - pattern: new ValidationPipe($OPTIONS)
+      - pattern-not: 'new ValidationPipe({ ..., whitelist: true, ..., forbidNonWhitelisted: true, ... })'

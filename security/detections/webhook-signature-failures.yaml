@@ -1,0 +1,7 @@
+title: Burst of synthetic webhook verification failures
+status: experimental
+logsource: {category: application, product: company-security-lab}
+detection:
+  selection: {event: webhook_rejected, result: denied}
+  condition: count(selection) >= 3 within 5m
+response: Check timestamp drift, deployment secret version and replay indicators before escalation.

@@ -1,0 +1,12 @@
+version: 1
+exceptions:
+  - finding_id: SYNTH-DAST-001
+    scanner: zap
+    rationale: Synthetic example of a tuned passive header alert.
+    compensating_controls:
+      - Reverse proxy injects the header in the scoped environment.
+      - Runtime header test is retained.
+    owner: platform-security@example.test
+    reviewer: appsec-reviewer@example.test
+    expires: 2026-09-30
+    scope: lab-api image 0.1.x only

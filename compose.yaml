@@ -1,0 +1,52 @@
+services:
+  lab-api:
+    build:
+      context: ./lab-api
+    image: company-security-lab:local
+    init: true
+    read_only: true
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    tmpfs:
+      - /tmp:rw,noexec,nosuid,nodev,size=16m,mode=1777
+    ports:
+      - 127.0.0.1:3001:3001
+    environment:
+      NODE_ENV: test
+      HOST: 0.0.0.0
+      PORT: "3001"
+      JSON_BODY_LIMIT_BYTES: "32768"
+      JWT_SECRET: local-synthetic-jwt-secret-32-bytes-min
+      JWT_ISSUER: company-security-lab
+      JWT_AUDIENCE: company-security-lab-clients
+      JWT_TTL_SECONDS: "900"
+      RESET_TOKEN_TTL_SECONDS: "900"
+      SYNTHETIC_WEBHOOK_SECRET: whsec_synthetic_local_only_do_not_reuse
+      AI_SOURCE_ALLOWED_HOSTS: content.example.test
+      LAB_TEST_MODE: "true"
+      LAB_TEST_KEY: local-test-key-long-enough
+    healthcheck:
+      test: [CMD, node, -e, "fetch('http://127.0.0.1:3001/health').then(r=>{if(!r.ok)process.exit(1)}).catch(()=>process.exit(1))"]
+      interval: 2s
+      timeout: 2s
+      retries: 20
+    pids_limit: 100
+    mem_limit: 256m
+    cpus: 0.5
+
+  zap:
+    image: zaproxy/zap-stable:2.17.0@sha256:8d387b1a63e3425beef4846e39719f5af2a787753af2d8b6558c6257d7a577a2
+    profiles: [security]
+    depends_on:
+      lab-api:
+        condition: service_healthy
+    user: "1000:1000"
+    read_only: true
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    tmpfs:
+      - /tmp:rw,noexec,nosuid,nodev,size=128m,mode=1777
+      - /home/zap/.ZAP:rw,noexec,nosuid,nodev,size=128m,mode=0700
+    volumes:
+      - ./reports/zap:/zap/wrk:rw
+    command: [zap-baseline.py, -t, "http://lab-api:3001/health", -m, "1", -I, -J, zap-report.json, -r, zap-report.html]

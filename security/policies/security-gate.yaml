@@ -1,0 +1,16 @@
+version: 1
+severity_order: [UNKNOWN, LOW, MEDIUM, HIGH, CRITICAL]
+immediate_fail:
+  verified_credential: true
+  exploitable_critical: true
+  validated_critical_policy_violation: true
+fail_new_high:
+  minimum_confidence: high
+  require_validation: true
+warning:
+  minimum_severity: MEDIUM
+exceptions:
+  require_owner: true
+  require_reviewer: true
+  require_expiration: true
+  require_compensating_controls: true

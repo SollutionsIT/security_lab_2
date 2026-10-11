@@ -1,0 +1,127 @@
+name: Deep security
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "17 3 * * 1"
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: deep-security-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  codeql:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    permissions:
+      contents: read
+      security-events: write
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+        with:
+          persist-credentials: false
+      - uses: github/codeql-action/init@988661ebb5e81487b3fb31b2185d2856c0a10679 # v4
+        with:
+          languages: javascript-typescript
+          build-mode: none
+      - uses: github/codeql-action/analyze@988661ebb5e81487b3fb31b2185d2856c0a10679 # v4
+        with:
+          category: /language:javascript-typescript
+
+  container-and-sbom:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+        with:
+          persist-credentials: false
+      - uses: docker/setup-buildx-action@8d2750c68a42422c14e847fe6c8ac0403b4cbd6f # v3
+      - uses: docker/build-push-action@10e90e3645eae34f1e60eeb005ba3a3d33f178e8 # v6
+        with:
+          context: lab-api
+          load: true
+          push: false
+          tags: company-security-lab:ci
+          provenance: false
+          sbom: false
+      - uses: aquasecurity/trivy-action@b6643a29fecd7f34b3597bc6acb0a98b03d33ff8 # v0.33.1
+        with:
+          image-ref: company-security-lab:ci
+          format: json
+          output: reports/trivy-image.json
+          scanners: vuln,secret
+          exit-code: "0"
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6
+        with:
+          python-version: "3.13"
+      - run: python -m pip install PyYAML==6.0.3
+      - run: python security/scripts/normalize_scanner.py trivy reports/trivy-image.json reports/trivy-image.normalized.json
+      - run: python security/scripts/evaluate_security_gate.py reports/trivy-image.normalized.json --json-output reports/image-gate.json
+      - uses: anchore/sbom-action@e22c389904149dbc22b58101806040fa8d37a610 # v0
+        with:
+          path: ./lab-api
+          format: cyclonedx-json
+          output-file: sbom/lab-api.cdx.json
+          upload-artifact: false
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        if: always()
+        with:
+          name: container-security-evidence
+          path: |
+            reports/trivy-image.json
+            reports/trivy-image.normalized.json
+            reports/image-gate.json
+            sbom/lab-api.cdx.json
+          if-no-files-found: error
+          retention-days: 14
+
+  local-dynamic-security:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+        with:
+          persist-credentials: false
+      - run: mkdir -p reports/zap
+      - run: docker compose up --build --wait lab-api
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6
+        with:
+          python-version: "3.13"
+          cache: pip
+      - run: python -m pip install .
+      - name: Run local-only API security regression
+        env:
+          SECURITY_TEST_BASE_URL: http://127.0.0.1:3001
+          SECURITY_TEST_LAB_TEST_KEY: local-test-key-long-enough
+          SECURITY_TEST_WEBHOOK_SECRET: whsec_synthetic_local_only_do_not_reuse
+          SECURITY_TEST_JWT_SECRET: local-synthetic-jwt-secret-32-bytes-min
+          SECURITY_TEST_JWT_ISSUER: company-security-lab
+          SECURITY_TEST_JWT_AUDIENCE: company-security-lab-clients
+          SECURITY_TEST_AI_ALLOWED_SOURCE_URL: https://content.example.test/document/1
+          SECURITY_TEST_USER_A_EMAIL: alice@example.test
+          SECURITY_TEST_USER_A_PASSWORD: Alice-Local-Only!42
+          SECURITY_TEST_USER_B_EMAIL: bob@example.test
+          SECURITY_TEST_USER_B_PASSWORD: Bob-Local-Only!42
+          SECURITY_TEST_ADMIN_EMAIL: admin@example.test
+          SECURITY_TEST_ADMIN_PASSWORD: Admin-Local-Only!42
+          SECURITY_TEST_UNKNOWN_EMAIL: unknown@example.test
+          SECURITY_TEST_REPLACEMENT_PASSWORD: Replacement-Local!84
+        run: pytest tests/security --junitxml reports/security-tests.xml
+      - run: python security/scripts/assert_local_target.py http://lab-api:3001
+      - run: docker compose --profile security run --rm zap
+      - run: python security/scripts/normalize_scanner.py zap reports/zap/zap-report.json reports/zap.normalized.json
+      - run: python security/scripts/evaluate_security_gate.py reports/zap.normalized.json --json-output reports/zap-gate.json
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        if: always()
+        with:
+          name: dynamic-security-evidence
+          path: reports/
+          if-no-files-found: error
+          retention-days: 14
+      - if: always()
+        run: docker compose --profile security down --volumes --remove-orphans

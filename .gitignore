@@ -1,0 +1,136 @@
+# Node
+node_modules/
+dist/
+coverage/
+npm-debug.log*
+*.tsbuildinfo
+
+# Python
+.venv/
+venv/
+env/
+__pycache__/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.ci-runtime/
+*.py[cod]
+
+# Local configuration and evidence
+.env
+.env.*
+!.env.example
+artifacts/
+reports/
+*.sarif
+*.log
+*.har
+*.pcap
+*.pcapng
+test-results/
+playwright-report/
+allure-results/
+allure-report/
+screenshots/
+downloads/
+tmp/
+temp/
+
+# Synthetic lab runtime data
+.lab/
+uploads/
+
+# Editors and operating systems
+.DS_Store
+.idea/
+.vscode/
+
+# Private study material must never be published
+.private/
+private/
+interview-private/
+*.private.md
+*.private.*
+*.local.*
+.PROJECT_STATUS.md
+
+# Reviewed synthetic evidence and PROJECT_STATUS.md are intentionally public.
+# Raw reports, private data and credentials remain excluded above/below.
+# Credentials and local authentication. Do not populate example templates.
+.ssh/
+.aws/
+.azure/
+.kube/
+.config/gcloud/
+.docker/config.json
+.npmrc
+.pypirc
+.netrc
+.git-credentials
+.envrc
+.direnv/
+.vault-token
+.vault-password*
+.bash_history
+.zsh_history
+.python_history
+id_rsa*
+id_ed25519*
+*.pem
+*.key
+*.p12
+*.pfx
+*.jks
+*.keystore
+*.kdbx
+*.ovpn
+credentials.json
+service-account*.json
+secrets.json
+secrets.yaml
+secrets.yml
+secrets.toml
+secrets.env
+kubeconfig
+kubeconfig.*
+
+# IaC state and populated variable files may contain credentials.
+.terraform/
+*.tfstate
+*.tfstate.*
+*.tfvars
+*.tfvars.json
+!*.example.tfvars
+!*.example.tfvars.json
+crash.log
+
+# Dumps, backups and private office documents are not portfolio source.
+*.sql
+*.dump
+*.db
+*.sqlite
+*.sqlite3
+*.bak
+*.backup
+*.zip
+*.tar
+*.tar.gz
+*.tgz
+*.7z
+*.doc
+*.docx
+*.ppt
+*.pptx
+*.xls
+*.xlsx
+*.pdf
+!tests/security/fixtures/files/safe-document.pdf
+
+# Local assistant history and nested Git repositories must not be copied.
+.codex/
+.claude/
+.git/
+
+# Generated inventories can disclose real infrastructure/dependencies.
+sbom/*
+!sbom/README.md

@@ -1,0 +1,22 @@
+title = "COMPANY synthetic portfolio Gitleaks policy"
+
+[extend]
+useDefault = true
+
+[[rules]]
+id = "synthetic-lab-api-key"
+description = "Detect the lab-only API-key shape used to validate this policy"
+regex = '''(?i)synthetic_api_key\s*[:=]\s*["']?synth_[a-z0-9]{24,}["']?'''
+keywords = ["synthetic_api_key"]
+
+[[allowlists]]
+description = "The explicit scanner self-test contains a non-credential canary"
+paths = ['''^security/fixtures/secrets/synthetic-detect\.txt$''']
+
+[[allowlists]]
+description = "Exact, documented, non-production JWT test constants"
+regexTarget = "secret"
+regexes = [
+  '''^synthetic-test-signing-key-at-least-32-characters$''',
+  '''^synthetic-test-jwt-secret-at-least-32-bytes$''',
+]

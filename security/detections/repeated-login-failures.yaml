@@ -1,0 +1,7 @@
+title: Repeated synthetic authentication failures
+status: experimental
+logsource: {category: application, product: company-security-lab}
+detection:
+  selection: {event: authentication_failed, result: failed}
+  condition: count(selection by actor_id) >= 5 within 5m
+response: Review correlation IDs and source telemetry; do not auto-block shared addresses blindly.
