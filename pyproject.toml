@@ -9,7 +9,7 @@ description = "Local-only security regression tests for the synthetic COMPANY se
 requires-python = ">=3.13"
 dependencies = [
   "httpx==0.28.1",
-  "mypy==2.3.1",
+  "mypy==2.4.0",
   "pre-commit==4.6.2",
   "pydantic-settings==2.15.0",
   "pytest==9.1.1",
