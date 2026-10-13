@@ -17,7 +17,7 @@ dependencies = [
   "PyYAML==6.0.3",
   "ruff==0.16.3",
   "semgrep==1.173.0",
-  "types-PyYAML==6.0.12.20260815",
+  "types-PyYAML==6.0.12.20260906",
 ]
 
 [tool.setuptools]
