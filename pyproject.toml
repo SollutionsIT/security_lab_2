@@ -16,7 +16,7 @@ dependencies = [
   "pytest-bdd==9.0.0",
   "PyYAML==6.0.3",
   "ruff==0.16.3",
-  "semgrep==1.173.0",
+  "semgrep==1.180.0",
   "types-PyYAML==6.0.12.20260815",
 ]
 
