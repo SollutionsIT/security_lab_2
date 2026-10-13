@@ -4,7 +4,9 @@ Run all commands from the repository root. Never target a system you do not own 
 
 ## 1. Install and start
 
-Required: Node 24, npm 11+, Python 3.13. `make install` installs pinned npm/Python dependencies (including Semgrep and pre-commit). Security scanners also need network/database access. Gitleaks, Docker, Trivy and Syft are separate binaries.
+Canonical CI: Node 24.21.0, npm 11.19.0, Python 3.13. `make install` installs pinned npm/Python dependencies (including Semgrep and pre-commit). Security scanners also need network/database access. Gitleaks 8.30.1, Docker, Trivy 0.75.0 and Syft are separate binaries. The GitHub Linux scanner installer verifies the committed official archive SHA-256 before extracting the single executable.
+
+For the complete native slice, run `make install` then `make ci-verify` with port 3001 free; open `reports/portfolio/index.html`. That command owns startup and cleanup. Do not start the separate API below at the same time.
 
 ```sh
 make install
@@ -52,7 +54,7 @@ For normalized policy decisions use `security/scripts/normalize_scanner.py --hel
 
 Existing workflows: `pr-security.yml` (quality, hygiene, secrets, SAST, dependencies/IaC), `deep-security.yml` (local integration/DAST and deeper checks), `release.yml` (local artifact verification). They do not imply deployment. Action references are pinned; scheduled external databases/images still need review. Dependabot is configured separately.
 
-`portfolio-native.yml` adds the native vertical slice under canonical Python 3.13, with local health readiness, cleanup, retained HTML/JUnit evidence and an npm high/critical gate. Its configuration was inspected locally; execution still requires the first GitHub run. The HTML report distinguishes the checks it runs itself from separate scanner jobs.
+`portfolio-native.yml` executes the native vertical slice under canonical Python 3.13, with local health readiness, cleanup, retained HTML/JUnit evidence and an npm high/critical gate. Actual GitHub runs are recorded in the dated execution ledger. The HTML report distinguishes the checks it runs itself from separate scanner jobs.
 
 Publish only the sanitized directory with new history. Enable Actions and inspect the first run, tool versions, artifacts and denied-release cases. Set branch rules requiring the appropriate jobs; uploading a report is not itself a security gate. Use minimal token permissions; no production secrets in untrusted PR jobs. Remote CI has not run merely because these files exist.
 

@@ -1,5 +1,7 @@
 # Execution ledger — 2026-10-11
 
+**Latest verification: 13 October 2026.** Earlier sections below are dated historical snapshots, not the current integration status. The repository is public following owner-approved checks. See [GitHub verification and remediation](docs/evidence/github-ci-verification-2026-10-13.md) for run links, actual findings and scope.
+
 This ledger concerns the sanitized standalone lab. It does not inherit an unverified result from another checkout. Primary evidence is generated locally under gitignored `reports/portfolio/`; README screenshots are reviewed snapshots, not remote CI results.
 
 ## Actually executed
@@ -94,3 +96,19 @@ The reviewed synthetic `docs/evidence/` files and this ledger are retained in th
 The later retained [publication review](docs/evidence/publication-review.md) records the 11 October native run at `15:18:42Z`: 71 Jest, 72 API, 14 Gherkin and 79 gate/evidence/publication tests passed. These are dated local results, not a new 13 October integration run. Earlier 16/21/33-test snapshots above remain historical and do not silently inherit later counts.
 
 On 13 October, the working-tree Gitleaks scan found no leaks and the publication text/name hygiene check passed. These scoped checks are not a complete privacy or licensing guarantee. Remote CI, canonical Python 3.13 execution and platform/external-scanner validation still require the actual authorized runs. The project is publishable as a working reference lab with these limitations, not a production-readiness or compliance claim.
+
+## Hosted GitHub verification — 13 October 2026
+
+Commit `8ac4cbefb6e7afe21a5c78daed598ff67d7d9377`, Ubuntu 24.04, Node 24.21.0 / npm 11.19.0, Python 3.13.16:
+
+| Workflow | Actual result | Evidence |
+|---|---|---|
+| Portfolio native evidence | SUCCESS: 71 Jest, 72 API, 95 gate/evidence, 14 Gherkin; no skips | [Run 38406660665](https://github.com/SollutionsIT/security_lab_2/actions/runs/38406660665) |
+| PR fast security | SUCCESS: quality, history/tree Gitleaks + canary, 4 Semgrep self-tests + source scan, filesystem Trivy | [Run 38406661002](https://github.com/SollutionsIT/security_lab_2/actions/runs/38406661002) |
+| Deep security, private phase | SUCCESS: isolated API/ZAP, container scan and actual image CycloneDX SBOM; CodeQL explicitly skipped pending public entitlement | [Run 38406660990](https://github.com/SollutionsIT/security_lab_2/actions/runs/38406660990) |
+
+Full npm audit retains 20 moderate development dependency entries; production-only audit reports zero. Final runtime image scan retains one MEDIUM zlib advisory and no HIGH/CRITICAL; filesystem scan retains two LOW UID/GID template findings. ZAP baseline is limited to unauthenticated `/health`; one informational cacheability alert was observed. Successful workflow conclusions include policy WARN, not a zero-risk claim.
+
+The public change was authorized after these jobs and publication review passed. Full-history Gitleaks checked all eight anonymized commits with no findings. Author identity uses Sollutions and the GitHub noreply email. README screenshots are now reviewed actual hosted-runner native evidence, not the earlier 11 October images. Raw reports, private documents and runtime dependencies remain gitignored.
+
+CodeQL and release attestation were separately dispatched after publication; their final results are recorded in the verification report. GitLab remote execution and Kubernetes deployment/enforcement remain unverified; no production deployment is claimed.
