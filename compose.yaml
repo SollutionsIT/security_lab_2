@@ -54,7 +54,7 @@ services:
     environment:
       # Arbitrary non-root runner UIDs have no passwd entry. Set Java's home
       # explicitly; JAVA_OPTS is not consumed by the upstream zap.sh launcher.
-      HOME: /home/zap
+      HOME: /home/zap/
       JAVA_TOOL_OPTIONS: -Xmx1024m -Duser.home=/home/zap/
     volumes:
       - ./reports/zap:/zap/wrk:rw
