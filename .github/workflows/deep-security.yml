@@ -16,10 +16,13 @@ concurrency:
 
 jobs:
   codeql:
+    # Public execution is required without the separate private Code Security entitlement.
+    if: github.event.repository.private == false
     runs-on: ubuntu-24.04
     timeout-minutes: 20
     permissions:
       contents: read
+      actions: read
       security-events: write
     steps:
       - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
@@ -29,9 +32,18 @@ jobs:
         with:
           languages: javascript-typescript
           build-mode: none
+          config-file: ./.github/codeql-config.yml
       - uses: github/codeql-action/analyze@988661ebb5e81487b3fb31b2185d2856c0a10679 # v4
         with:
           category: /language:javascript-typescript
+          output: reports/codeql
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        if: always()
+        with:
+          name: codeql-sarif
+          path: reports/codeql/*.sarif
+          if-no-files-found: error
+          retention-days: 14
 
   container-and-sbom:
     runs-on: ubuntu-24.04
@@ -49,22 +61,18 @@ jobs:
           tags: company-security-lab:ci
           provenance: false
           sbom: false
-      - uses: aquasecurity/trivy-action@b6643a29fecd7f34b3597bc6acb0a98b03d33ff8 # v0.33.1
-        with:
-          image-ref: company-security-lab:ci
-          format: json
-          output: reports/trivy-image.json
-          scanners: vuln,secret
-          exit-code: "0"
       - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6
         with:
           python-version: "3.13"
+      - run: mkdir -p reports sbom
+      - run: python security/scripts/install_ci_scanner.py trivy
+      - run: .ci-runtime/trivy/trivy image --scanners vuln,secret --exit-code 0 --format json --output reports/trivy-image.json company-security-lab:ci
       - run: python -m pip install PyYAML==6.0.3
       - run: python security/scripts/normalize_scanner.py trivy reports/trivy-image.json reports/trivy-image.normalized.json
       - run: python security/scripts/evaluate_security_gate.py reports/trivy-image.normalized.json --json-output reports/image-gate.json
       - uses: anchore/sbom-action@e22c389904149dbc22b58101806040fa8d37a610 # v0
         with:
-          path: ./lab-api
+          image: company-security-lab:ci
           format: cyclonedx-json
           output-file: sbom/lab-api.cdx.json
           upload-artifact: false
@@ -120,7 +128,11 @@ jobs:
         if: always()
         with:
           name: dynamic-security-evidence
-          path: reports/
+          path: |
+            reports/security-tests.xml
+            reports/zap/
+            reports/zap.normalized.json
+            reports/zap-gate.json
           if-no-files-found: error
           retention-days: 14
       - if: always()

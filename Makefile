@@ -52,7 +52,7 @@ secrets: ## Scan the repository and prove the synthetic canary is detected.
 sast: ## Validate, test and run custom Semgrep policy.
 	mkdir -p reports
 	$(VENV)/bin/semgrep --validate --config semgrep.yml
-	$(VENV)/bin/semgrep --test --config semgrep.yml security/semgrep
+	$(PY) security/scripts/test_semgrep_config.py --semgrep $(VENV)/bin/semgrep
 	$(VENV)/bin/semgrep scan --config semgrep.yml --json --output reports/semgrep.json
 
 sca: ## Run npm audit and Trivy filesystem dependency scan.

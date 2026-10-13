@@ -23,7 +23,9 @@ EXCLUDED = {
 }
 PRIVATE = {".private", "private", "interview-private"}
 DENIED = ("fy" + "lpi", "soli" + "annikov", "vlad" + "yslav")
-LOCAL_PATH = re.compile(r"(?:/Us" + r"ers/|/ho" + r"me/(?!zap(?:/|$))|[A-Z]:\\Us" + r"ers\\)", re.I)
+LOCAL_PATH = re.compile(
+    r"(?:/Us" + r"ers/|/ho" + r"me/(?!zap(?:/|:|$))|[A-Z]:\\Us" + r"ers\\)", re.I
+)
 
 
 def violations(name: str, content: str) -> list[str]:

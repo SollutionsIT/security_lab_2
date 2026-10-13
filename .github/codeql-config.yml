@@ -1,0 +1,7 @@
+name: COMPANY application source
+paths:
+  - lab-api/src
+paths-ignore:
+  # Intentional scanner positives and unit test fixtures are verified separately.
+  - '**/*.spec.ts'
+  - '**/node_modules/**'

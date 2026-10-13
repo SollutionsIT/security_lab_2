@@ -82,7 +82,7 @@ custom-sast:
   script:
     - mkdir -p reports
     - .venv/bin/semgrep --validate --config semgrep.yml
-    - .venv/bin/semgrep --test --config semgrep.yml security/semgrep
+    - .venv/bin/python security/scripts/test_semgrep_config.py --semgrep .venv/bin/semgrep
     - .venv/bin/semgrep scan --metrics=off --error --config semgrep.yml --json --output reports/semgrep.json lab-api/src
   artifacts:
     when: always

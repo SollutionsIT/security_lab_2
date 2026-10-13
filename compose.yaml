@@ -46,7 +46,8 @@ services:
     security_opt: [no-new-privileges:true]
     tmpfs:
       - /tmp:rw,noexec,nosuid,nodev,size=128m,mode=1777
-      - /home/zap/.ZAP:rw,noexec,nosuid,nodev,size=128m,mode=0700
+      # The baseline Automation Framework writes /home/zap/zap.yaml as well as .ZAP.
+      - /home/zap:rw,noexec,nosuid,nodev,size=256m,mode=0700,uid=1000,gid=1000
     volumes:
       - ./reports/zap:/zap/wrk:rw
     command: [zap-baseline.py, -t, "http://lab-api:3001/health", -m, "1", -I, -J, zap-report.json, -r, zap-report.html]

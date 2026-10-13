@@ -14,6 +14,16 @@ def test_private_identifiers_are_denied() -> None:
     assert not violations("tests/.env.example", "alice@example.test")
 
 
+@pytest.mark.parametrize("path", ["/home/zap:rw", "/home/zap/.ZAP", "/ho" + "me/zap"])
+def test_container_zap_home_is_not_a_personal_path(path: str) -> None:
+    assert not violations("compose.yaml", path)
+
+
+@pytest.mark.parametrize("path", ["/ho" + "me/person:rw", "/ho" + "me/zap-person/files"])
+def test_other_home_paths_remain_private(path: str) -> None:
+    assert violations("compose.yaml", path)
+
+
 def test_missing_results_do_not_become_pass() -> None:
     assert "NOT RUN" in render({})
     assert "Demonstration: PASS" not in render({})
