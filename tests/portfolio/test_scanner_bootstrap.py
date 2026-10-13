@@ -73,7 +73,7 @@ def test_zap_has_bounded_writable_home_without_writable_root() -> None:
     assert zap["cap_drop"] == ["ALL"]
     assert zap["user"] == "${ZAP_UID:-1000}:${ZAP_GID:-1000}"
     assert zap["mem_limit"] == "3g"
-    assert zap["environment"]["JAVA_TOOL_OPTIONS"] == "-Xmx1024m -Duser.home=/home/zap"
+    assert zap["environment"]["JAVA_TOOL_OPTIONS"] == "-Xmx1024m -Duser.home=/home/zap/"
     assert any(
         mount.startswith("/home/zap:rw,") and "uid=${ZAP_UID:-1000}" in mount
         for mount in zap["tmpfs"]
