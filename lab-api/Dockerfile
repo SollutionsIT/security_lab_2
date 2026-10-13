@@ -8,6 +8,9 @@ COPY src ./src
 RUN npm run build && npm prune --omit=dev --ignore-scripts
 
 FROM node:24.21.0-alpine3.24@sha256:ebfe2f90462722a7a4de65e91990e97fe0d401c70e0e762c5b53302f905ec1c1 AS runtime
+# Build tooling is unnecessary in the delivered API. Remove its dependency
+# surface rather than suppressing the bundled npm vulnerability findings.
+RUN rm -r /usr/local/lib/node_modules/npm && rm /usr/local/bin/npm /usr/local/bin/npx
 ENV NODE_ENV=production \
     HOST=0.0.0.0 \
     PORT=3001
