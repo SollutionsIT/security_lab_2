@@ -1,5 +1,5 @@
 import { BadRequestException, NotFoundException, PayloadTooLargeException } from '@nestjs/common';
-import { mkdtemp, rm } from 'node:fs/promises';
+import { mkdtemp, rm, symlink, unlink, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { tmpdir } from 'node:os';
 import type { SecurityEventsService } from '../../security/security-events.service';
@@ -102,5 +102,16 @@ describe('UploadService', () => {
         action: 'read',
       }),
     );
+  });
+
+  it('does not follow a symlink replacing a stored attachment', async () => {
+    const stored = await service.store(file(), actor, 'correlation-create');
+    const original = join(root, stored.storedName);
+    const replacement = join(root, 'replacement.png');
+    await writeFile(replacement, file().buffer);
+    await unlink(original);
+    await symlink(replacement, original);
+    await expect(service.download(stored.storedName, actor, 'correlation-read'))
+      .rejects.toBeInstanceOf(NotFoundException);
   });
 });

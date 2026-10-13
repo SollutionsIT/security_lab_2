@@ -23,7 +23,8 @@ interface XmlShape {
 
 const FORBIDDEN_DECLARATION = /<!\s*(?:DOCTYPE|ENTITY)\b/i;
 const ENTITY_REFERENCE = /&(?:#\d+|#x[\da-f]+|[a-z_][\w.:-]*);/i;
-const TAG_TOKEN = /<[^>]*>/g;
+// Excluding another '<' prevents quadratic rescanning of malformed open tags.
+const TAG_TOKEN = /<[^<>]*>/g;
 
 function inspectShape(xml: string): XmlShape {
   let depth = 0;

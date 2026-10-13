@@ -86,7 +86,7 @@ GitHub Actions are pinned to SHAs; native/fast checkouts disable persisted Git c
 
 1. Publish/import the sanitized project with `.gitlab-ci.yml` at repository root. Do not copy another customer's history.
 2. Use an ephemeral **Linux x86_64 Docker/container runner**, not a privileged host shell runner. No Docker-in-Docker/socket is needed for these jobs.
-3. Allow pulls/downloads from the official container registry, nodejs.org, PyPI, npm and scanner databases. The Python/Gitleaks/Trivy images are digest-pinned; Node 24.12.0 is verified against a committed SHA-256 from the official release manifest. Python's direct dependencies are pinned; the complete transitive Python graph is not hash-locked.
+3. Allow pulls/downloads from the official container registry, nodejs.org, PyPI, npm and scanner databases. The Python/Gitleaks/Trivy images are digest-pinned; Node 24.21.0 is verified against a committed SHA-256 from the official release manifest. Python's direct dependencies are pinned; the complete transitive Python graph is not hash-locked.
 4. Validate the YAML with GitLab **CI Lint**, run a branch/MR pipeline, inspect JUnit/JSON/artifacts, then test a known failing branch. Local YAML/contract tests are not GitLab server validation.
 5. Configure protected branches/tags and review required pipeline success. The delivery job runs only for a protected tag and waits for the native, secret, SAST and scanner-policy jobs.
 6. Do not grant protected variables to untrusted MR code. Avoid parent-project execution of an untrusted fork with privileged access; review runner/token permissions and artifact visibility.
@@ -97,6 +97,6 @@ MR rules avoid a duplicate push pipeline when an open MR exists. The build archi
 
 Reports are gitignored. Both providers retain evidence for seven days even after failed verification; the protected-tag candidate uses 14 days. Raw API process logs stay local to the runner and are not explicitly uploaded by the native job. Check logs may contain diagnostic data: review redaction/artifact access before adapting the lab to real data. No automatic public Pages/report website is created.
 
-Local command success, syntax/contract checks, a successful remote job and actual deployed enforcement are separate evidence levels. First remote runs remain pending until repository publication and runner execution are authorized.
+Local command success, syntax/contract checks, a successful remote job and actual deployed enforcement are separate evidence levels. Consult the dated execution ledger for actual GitHub results. GitLab server CI Lint and remote execution remain separate adoption steps.
 
 Official implementation references: [GitHub secure workflow use](https://docs.github.com/en/actions/reference/security/secure-use), [GitLab MR pipelines](https://docs.gitlab.com/ci/pipelines/merge_request_pipelines/), [GitLab JUnit reports](https://docs.gitlab.com/ci/testing/unit_test_reports/), [pytest-bdd](https://pytest-bdd.readthedocs.io/en/latest/), [OWASP CI/CD Security](https://cheatsheetseries.owasp.org/cheatsheets/CI_CD_Security_Cheat_Sheet.html).
