@@ -52,7 +52,19 @@ services:
     mem_limit: 3g
     pids_limit: 256
     environment:
-      JAVA_OPTS: -Xmx1024m
+      # Arbitrary non-root runner UIDs have no passwd entry. Set Java's home
+      # explicitly; JAVA_OPTS is not consumed by the upstream zap.sh launcher.
+      HOME: /home/zap
+      JAVA_TOOL_OPTIONS: -Xmx1024m -Duser.home=/home/zap
     volumes:
       - ./reports/zap:/zap/wrk:rw
-    command: [zap-baseline.py, -t, "http://lab-api:3001/health", -m, "1", -I, -J, zap-report.json, -r, zap-report.html]
+    command:
+      - /bin/sh
+      - -c
+      - |
+        zap-baseline.py -d -t http://lab-api:3001/health -m 1 -I -J zap-report.json -r zap-report.html
+        scan_status=$$?
+        if [ -f /home/zap/.ZAP/zap.log ]; then
+          cp /home/zap/.ZAP/zap.log /zap/wrk/zap-runtime.log
+        fi
+        exit "$$scan_status"
