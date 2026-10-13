@@ -71,8 +71,12 @@ def test_zap_has_bounded_writable_home_without_writable_root() -> None:
     zap = yaml.safe_load((ROOT / "compose.yaml").read_text())["services"]["zap"]
     assert zap["read_only"] is True
     assert zap["cap_drop"] == ["ALL"]
-    assert zap["user"] == "1000:1000"
-    assert any(mount.startswith("/home/zap:rw,") and "uid=1000" in mount for mount in zap["tmpfs"])
+    assert zap["user"] == "${ZAP_UID:-1000}:${ZAP_GID:-1000}"
+    assert zap["mem_limit"] == "3g"
+    assert any(
+        mount.startswith("/home/zap:rw,") and "uid=${ZAP_UID:-1000}" in mount
+        for mount in zap["tmpfs"]
+    )
 
 
 def test_scanner_workflows_do_not_hide_failures() -> None:

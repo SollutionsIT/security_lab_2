@@ -40,14 +40,19 @@ services:
     depends_on:
       lab-api:
         condition: service_healthy
-    user: "1000:1000"
+    # Use the non-root report-directory owner; defaults remain UID/GID 1000.
+    user: "${ZAP_UID:-1000}:${ZAP_GID:-1000}"
     read_only: true
     cap_drop: [ALL]
     security_opt: [no-new-privileges:true]
     tmpfs:
-      - /tmp:rw,noexec,nosuid,nodev,size=128m,mode=1777
+      - /tmp:rw,noexec,nosuid,nodev,size=1024m,mode=1777
       # The baseline Automation Framework writes /home/zap/zap.yaml as well as .ZAP.
-      - /home/zap:rw,noexec,nosuid,nodev,size=256m,mode=0700,uid=1000,gid=1000
+      - /home/zap:rw,noexec,nosuid,nodev,size=1024m,mode=0700,uid=${ZAP_UID:-1000},gid=${ZAP_GID:-1000}
+    mem_limit: 3g
+    pids_limit: 256
+    environment:
+      JAVA_OPTS: -Xmx1024m
     volumes:
       - ./reports/zap:/zap/wrk:rw
     command: [zap-baseline.py, -t, "http://lab-api:3001/health", -m, "1", -I, -J, zap-report.json, -r, zap-report.html]

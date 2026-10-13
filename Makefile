@@ -83,7 +83,8 @@ dast: ## Run reporting-mode ZAP only against the Compose lab.
 	$(PY) security/scripts/assert_local_target.py http://lab-api:3001
 	mkdir -p reports/zap
 	docker compose up --build --wait -d lab-api
-	docker compose --profile security run --rm zap
+	@test "$$(id -u)" -ne 0 || { echo "ERROR: run ZAP from a non-root account"; exit 2; }
+	ZAP_UID="$$(id -u)" ZAP_GID="$$(id -g)" docker compose --profile security run --rm zap
 
 gate: ## Exercise all normalized security-gate outcomes.
 	$(PY) security/scripts/evaluate_security_gate.py security/fixtures/gate/pass.json

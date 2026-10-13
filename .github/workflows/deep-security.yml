@@ -121,7 +121,10 @@ jobs:
           SECURITY_TEST_REPLACEMENT_PASSWORD: Replacement-Local!84
         run: pytest tests/security --junitxml reports/security-tests.xml
       - run: python security/scripts/assert_local_target.py http://lab-api:3001
-      - run: docker compose --profile security run --rm zap
+      - name: Run bounded non-root ZAP as the report-directory owner
+        run: |
+          test "$(id -u)" -ne 0
+          ZAP_UID="$(id -u)" ZAP_GID="$(id -g)" docker compose --profile security run --rm zap
       - run: python security/scripts/normalize_scanner.py zap reports/zap/zap-report.json reports/zap.normalized.json
       - run: python security/scripts/evaluate_security_gate.py reports/zap.normalized.json --json-output reports/zap-gate.json
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4

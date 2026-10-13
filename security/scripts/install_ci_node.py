@@ -11,9 +11,9 @@ import urllib.request
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
-VERSION = "24.12.0"
+VERSION = "24.21.0"
 ARCHIVE = f"node-v{VERSION}-linux-x64.tar.xz"
-SHA256 = "bdebee276e58d0ef5448f3d5ac12c67daa963dd5e0a9bb621a53d1cefbc852fd"
+SHA256 = "fd8e59d5a511510f6a298afb548f18c7d2b1be404d8b4a27d94fbe49f56cb2d6"
 
 
 def main() -> int:
@@ -36,7 +36,7 @@ def main() -> int:
             package.extractall(directory, filter="data")
         destination.parent.mkdir(parents=True, exist_ok=True)
         shutil.move(str(directory / f"node-v{VERSION}-linux-x64"), destination)
-    print("Installed checksum-verified Node 24.12.0 in .ci-runtime/node")
+    print(f"Installed checksum-verified Node {VERSION} in .ci-runtime/node")
     return 0
 
 
