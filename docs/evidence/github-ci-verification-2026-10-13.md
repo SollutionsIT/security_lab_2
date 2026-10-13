@@ -37,11 +37,16 @@ Commit: `8ac4cbefb6e7afe21a5c78daed598ff67d7d9377`.
 
 Historical failed runs remain visible. Successful checks do not erase earlier failures or unresolved risks.
 
-## Prioritization and next actions
-
 ## Public integration phase
 
-Repository visibility was changed to public with the owner's explicit approval after the private-phase checks passed. Public CodeQL/deep verification and release provenance were dispatched separately: [deep run](https://github.com/SollutionsIT/security_lab_2/actions/runs/38407384264), [release run](https://github.com/SollutionsIT/security_lab_2/actions/runs/38407388676). Their conclusions must be checked before calling these integrations verified.
+Repository visibility was changed to public with the owner's explicit approval after the private-phase checks passed.
+
+- [First public deep run](https://github.com/SollutionsIT/security_lab_2/actions/runs/38407384264): **SUCCESS**, including actual CodeQL analysis/SARIF upload, container/SBOM and isolated API/ZAP. CodeQL found three source warnings; successful execution was not treated as zero findings.
+- CodeQL triage: `js/polynomial-redos` identified repeated rescanning by the XML tag regex. The scanner now excludes nested opening delimiters; the existing 32 KiB input cap remains. Two `js/path-injection` alerts identified request-name flows into download filesystem operations. Strict UUID/extension validation and confinement already existed; no traversal exploit was demonstrated. Download now resolves the server-owned repository key and reads one `O_NOFOLLOW` file handle with size/type checks, avoiding the lstat/read symlink race. No rule suppression or source exclusion was added to hide these findings.
+- [CodeQL reanalysis](https://github.com/SollutionsIT/security_lab_2/actions/runs/38408100980) on commit `b8c01b1a24d970b78e7482a5d10801cc189f8625`: the CodeQL job passed and downloaded SARIF contains **zero findings**. Two regression tests cover maximum-size malformed XML delimiters and replacement upload symlinks.
+- [Fresh native verification](https://github.com/SollutionsIT/security_lab_2/actions/runs/38408109348): **SUCCESS**, 73 Jest, 72 API, 95 gate/evidence and 14 Gherkin cases; no skips. The full local command also passed after these code changes. README screenshots use this later actual artifact; the earlier 71-case record above remains historical.
+- [Release evidence](https://github.com/SollutionsIT/security_lab_2/actions/runs/38407388676): **SUCCESS**. Built a Docker candidate, scanned/gated it, generated an actual image CycloneDX SBOM, retained tar/checksum and created GitHub build-provenance attestation. Downloaded tar checksum passed and `gh attestation verify ... --repo SollutionsIT/security_lab_2` exited successfully. This run attests the pre-CodeQL-fix commit `8ac4cbefb6e7afe21a5c78daed598ff67d7d9377`, not later source; no registry push or production deployment occurred.
+- Pull Requests were initially disabled by the repository owner, preventing API creation. They were enabled with explicit owner approval; [PR #11](https://github.com/SollutionsIT/security_lab_2/pull/11) exercises the real PR workflow. Dependency review initially failed because Dependency graph was disabled. After enabling that prerequisite, the current PR dependency-review job passed. This diff contains no dependency upgrades, so it demonstrates integration execution, not detection of a deliberately introduced vulnerable package.
 
 ## Prioritization and next actions
 

@@ -31,7 +31,7 @@ Start with [six evidence-backed case studies](docs/security-case-studies.md), [m
 
 ## See it working
 
-The screenshots below come from the [successful GitHub native run on 13 October 2026](https://github.com/SollutionsIT/security_lab_2/actions/runs/38406660665), not fabricated dashboards. “Local execution” in the report means loopback HTTP inside the GitHub runner, not a customer environment. It passed 71 Jest, 72 API, 95 gate/evidence tests and 14 Gherkin scenarios with no skips. Exact runtime, results and limitations are in [PROJECT_STATUS.md](PROJECT_STATUS.md). The banner above is a conceptual AI-generated illustration.
+The screenshots below come from the [successful GitHub native run on 13 October 2026](https://github.com/SollutionsIT/security_lab_2/actions/runs/38408109348), not fabricated dashboards. “Local execution” in the report means loopback HTTP inside the GitHub runner, not a customer environment. It passed 73 Jest, 72 API, 95 gate/evidence tests and 14 Gherkin scenarios with no skips. Exact runtime, results and limitations are in [PROJECT_STATUS.md](PROJECT_STATUS.md). The banner above is a conceptual AI-generated illustration.
 
 ![Actual local verification summary](docs/assets/evidence-overview.png)
 

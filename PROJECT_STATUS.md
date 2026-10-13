@@ -112,3 +112,7 @@ Full npm audit retains 20 moderate development dependency entries; production-on
 The public change was authorized after these jobs and publication review passed. Full-history Gitleaks checked all eight anonymized commits with no findings. Author identity uses Sollutions and the GitHub noreply email. README screenshots are now reviewed actual hosted-runner native evidence, not the earlier 11 October images. Raw reports, private documents and runtime dependencies remain gitignored.
 
 CodeQL and release attestation were separately dispatched after publication; their final results are recorded in the verification report. GitLab remote execution and Kubernetes deployment/enforcement remain unverified; no production deployment is claimed.
+
+### Public CodeQL and release follow-up
+
+The first public deep run completed all jobs. CodeQL reported three warnings; after boundary changes and two regression tests, actual reanalysis SARIF contained zero findings. Fresh native CI passed 73 Jest, 72 API, 95 gate/evidence and 14 Gherkin scenarios. The README screenshots now reflect that later 73-test artifact. Dependency review passed on the real handover PR after enabling its Dependency graph prerequisite. Release CI completed build/scan/gate/SBOM/checksum and GitHub provenance; the downloaded candidate's checksum and attestation verification passed. Exact commits/run links and residual WARN findings are in the linked verification report. Earlier snapshots retain their original counts.
