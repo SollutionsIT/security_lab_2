@@ -37,6 +37,11 @@ describe('XmlImportService', () => {
     );
   });
 
+  it('rejects a maximum-size run of malformed opening delimiters', () => {
+    expect(() => service.parse('<'.repeat(XML_LIMITS.maxBytes), 'correlation-1234'))
+      .toThrow(BadRequestException);
+  });
+
   it('rejects excessive nesting', () => {
     const xml = `${'<n>'.repeat(XML_LIMITS.maxDepth + 1)}${'</n>'.repeat(
       XML_LIMITS.maxDepth + 1,

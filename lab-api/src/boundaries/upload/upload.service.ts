@@ -6,7 +6,8 @@ import {
   PayloadTooLargeException,
 } from '@nestjs/common';
 import { randomUUID } from 'node:crypto';
-import { lstat, mkdir, readFile, readdir, unlink, writeFile } from 'node:fs/promises';
+import { constants } from 'node:fs';
+import { mkdir, open, readdir, unlink, writeFile } from 'node:fs/promises';
 import { extname, isAbsolute, join, relative, resolve } from 'node:path';
 import { tmpdir } from 'node:os';
 import { AuthenticatedActor, Role } from '../../data/entities';
@@ -81,10 +82,9 @@ function extensionOf(originalName: string): AllowedExtension {
     throw new BadRequestException('Client filename is unsafe');
   }
   const extension = extname(originalName).toLowerCase();
-  if (!(extension in FORMATS)) {
-    throw new BadRequestException('File extension is not allowed');
-  }
-  return extension as AllowedExtension;
+  if (extension === '.png') return '.png';
+  if (extension === '.pdf') return '.pdf';
+  throw new BadRequestException('File extension is not allowed');
 }
 
 @Injectable()
@@ -197,17 +197,25 @@ export class UploadService {
       }
       throw new NotFoundException('Attachment not found');
     }
-    const target = resolve(this.storageRoot, storedName);
+    const target = resolve(this.storageRoot, attachment.storageKey);
     if (!isInside(this.storageRoot, target)) {
       throw new NotFoundException('Attachment not found');
     }
 
     try {
-      const status = await lstat(target);
-      if (!status.isFile() || status.isSymbolicLink() || status.size > MAX_UPLOAD_BYTES) {
-        throw new NotFoundException('Attachment not found');
+      // Open the server-owned storage key once; do not follow a swapped symlink
+      // between a path-based lstat and a separate path-based read.
+      const handle = await open(target, constants.O_RDONLY | constants.O_NOFOLLOW);
+      let body: Buffer;
+      try {
+        const status = await handle.stat();
+        if (!status.isFile() || status.size > MAX_UPLOAD_BYTES) {
+          throw new NotFoundException('Attachment not found');
+        }
+        body = await handle.readFile();
+      } finally {
+        await handle.close();
       }
-      const body = await readFile(target);
       if (!FORMATS[extension].matches(body)) {
         throw new NotFoundException('Attachment not found');
       }
