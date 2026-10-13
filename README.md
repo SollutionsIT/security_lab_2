@@ -3,6 +3,7 @@
 [![Native verification](https://github.com/SollutionsIT/security_lab_2/actions/workflows/portfolio-native.yml/badge.svg)](https://github.com/SollutionsIT/security_lab_2/actions/workflows/portfolio-native.yml)
 [![Security checks](https://github.com/SollutionsIT/security_lab_2/actions/workflows/pr-security.yml/badge.svg)](https://github.com/SollutionsIT/security_lab_2/actions/workflows/pr-security.yml)
 [![Deep security](https://github.com/SollutionsIT/security_lab_2/actions/workflows/deep-security.yml/badge.svg)](https://github.com/SollutionsIT/security_lab_2/actions/workflows/deep-security.yml)
+[![Release evidence](https://github.com/SollutionsIT/security_lab_2/actions/workflows/release.yml/badge.svg)](https://github.com/SollutionsIT/security_lab_2/actions/workflows/release.yml)
 
 ![COMPANY Security Lab: from security risks to tested controls](docs/assets/portfolio-hero.png)
 
